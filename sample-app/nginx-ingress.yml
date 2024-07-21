@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngnixing
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: kuber.tlow.ir
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port:
+                  number: 8080
+            path: /
+
+
+# This section is only required if TLS is to be enabled for the Ingress
+  tls:
+    - hosts:
+      - kuber.tlow.ir
+      secretName: kubetls

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usersdeployment
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users
+          image: farbodgerami/kubedemousers:latest
+          env:
+            - name: AUTHADDRESS
+              # value: "10.99.104.252"
+              value: "authservice"
+              # value: "authservice.default"

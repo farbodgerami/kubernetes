@@ -1,0 +1,20 @@
+version: "3"
+services:
+  auth:
+    build: ./auth-api
+  users:
+    build: ./users-api
+    ports: 
+      - "8080:8080"
+    environment:
+      AUTHADDRESS: auth
+      # in vase vaghtie ke vase kubernetes addrese auth ro too users-app.js ro ba pain avas kardim:
+      AUTHSSERVICE_SERVICE_HOST: auth
+  tasks:
+    build: ./tasks-api
+    ports: 
+      - "7000:7000"
+    environment:
+      TASKS_FOLDER: tasks
+      AUTHADDRESS: auth
+    
