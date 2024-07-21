@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: argocd
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+ namespace: argocd
+ name: nginx-service
+ labels:
+    app: nginx
+    svc: test-nginx
+spec:
+  type: LoadBalancer
+#  type: NodePort
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+      nodePort: 31082
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argobridge
+  namespace: default
+spec:
+  type: ExternalName
+#  externalName: argocd-server.argocd
+  externalName: nginx-service.argocd
+
+
+
