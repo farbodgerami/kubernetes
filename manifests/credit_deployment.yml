@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: PROJECT_NAME_1
+  labels:
+    app: PROJECT_NAME_1
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: PROJECT_NAME_1
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: PROJECT_NAME_1
+        tier: backend
+    spec:
+      containers:
+      - name: php
+        image: repoAddress/PROJECT_NAME_1/php:VERSION
+        volumeMounts:
+        - name: PROJECT_NAME_1_data
+          mountPath: /var/www
+        envFrom:
+        - configMapRef:
+            name: PROJECT_NAME_1_configmap
+      volumes:
+      - name: PROJECT_NAME_1_data
+        persistentVolumeClaim:
+          claimName: PROJECT_NAME_1_pvc
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        # failureTreshhold: 5
+        
+
+
+
+      
+      
+ 

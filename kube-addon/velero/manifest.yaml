@@ -1,0 +1,18 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: velero
+spec:
+  backupSyncPeriod: 2m0s
+  provider: aws
+  objectStorage:
+    bucket: velero-backup
+  credential:
+    name: velero-credential
+    key: cloud
+  config:
+    region: minio
+    profile: "default"
+    s3ForcePathStyle: "true"
+    s3Url: https://object.kube.<DOMAIN>/

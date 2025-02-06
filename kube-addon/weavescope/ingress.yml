@@ -1,0 +1,38 @@
+apiVersion: v1
+data:
+  auth: dGVjaG5vbGlmZTokYXByMSRiclYvd0R4cCRiTkswVTdSZ2dsbHdvSlpFb1UvVEkwCgo=
+kind: Secret
+metadata:
+  name: weavescope-basic-auth
+  namespace: weave
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    certmanager.k8s.io/acme-http01-edit-in-place: "false"
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: weavescope-basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+  name: weave
+  namespace: weave
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: scope.kube.<DOMAIN>
+    http:
+      paths:
+      - backend:
+          service:
+            name: weave-scope-app
+            port:
+                number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - scope.kube.<DOMAIN>
+    secretName: scope-mecan-tls-secret

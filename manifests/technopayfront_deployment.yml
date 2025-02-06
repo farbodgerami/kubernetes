@@ -1,0 +1,34 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: DOMAIN_NAME_1_front
+  labels:
+    app: DOMAIN_NAME_1_front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: DOMAIN_NAME_1_front
+  template:
+    metadata:
+      labels:
+        app: DOMAIN_NAME_1_front
+    spec:
+      containers:
+      - name: DOMAIN_NAME_1_front
+        image: repoAddress/PROJECT_NAME_1-front:VERSION
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: DOMAIN_NAME_1front_configmap
+        ports:
+        - containerPort: 3000
+   
+
+ 

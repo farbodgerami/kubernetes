@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: PROJECT_NAME_1_nginx
+  labels:
+    tier: backend
+    app: PROJECT_NAME_1_nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: PROJECT_NAME_1_nginx
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: PROJECT_NAME_1_nginx
+        tier: backend
+    spec:
+      containers:
+      - name: nginx
+        image: repoAddress/PROJECT_NAME_1/ngx:VERSION
+        volumeMounts:
+        - name: PROJECT_NAME_1_data
+          mountPath: /var/www
+        - name: PROJECT_NAME_1_nginx_config_default
+          readOnly: true
+          mountPath: /etc/nginx/conf.d
+
+        - name: PROJECT_NAME_1_nginx_config_nginxfile
+          readOnly: true
+          mountPath: /etc/nginx/
+          ports:
+          - containerPort: 80
+            name: http
+            protocol: TCP
+      volumes:
+        - name: PROJECT_NAME_1_data
+          persistentVolumeClaim:
+            claimName: PROJECT_NAME_1_pvc
+        - name: PROJECT_NAME_1_nginx_config_default
+          configMap:
+            name: default-conf  
+            items:
+              - key: default.conf
+                path: default.conf
+      
+        - name: PROJECT_NAME_1_nginx_config_nginxfile
+          configMap:
+            name: nginx-conf  
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        # failureTreshhold: 5
+
+ 
+      
+
+ 

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay
+  labels:
+    app: pay
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pay
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: pay
+        tier: backend
+    spec:
+      containers:
+      - name: php
+        image: repoAddress/payment/php:VERSION
+        volumeMounts:
+        - name: pay_data
+          mountPath: /var/www
+        envFrom:
+        - configMapRef:
+            name: pay_configmap
+      volumes:
+      - name: pay_data
+        persistentVolumeClaim:
+          claimName: pay_pvc
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        # failureTreshhold: 5
+        
+          
+ 
+      
+      
+ 

@@ -1,0 +1,56 @@
+auth:
+  enabled: true
+  rootUser: root
+  rootPassword: "rwfr_2130_AWPOL"
+  usernames:
+    - mongo-pay
+  passwords:
+    - rwfr_2130_AWPOL
+  databases:
+    - mongo-db-pay
+architecture: replicaset
+useStatefulSet: true
+replicaCount: 3
+updateStrategy:
+  type: RollingUpdate
+podAntiAffinityPreset: hard
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4096Mi
+  requests:
+    cpu: 250m
+    memory: 1024Mi
+
+persistence:
+  enabled: true
+  size: 1Ti
+  accessModes:
+    - ReadWriteOnce
+
+      #metrics:
+      #  enabled: true
+      #  image:
+      #    registry: docker.io
+      #    repository: bitnami/mongodb-exporter
+      #    tag: 0.37.0-debian-11-r15
+      #  annotations:
+      #    prometheus.io/scrape: "true"
+      #    prometheus.io/port: "9187"
+      #  containerPorts:
+      #    http: 9216
+      #  service:
+      #    annotations:
+      #      prometheus.io/scrape: "true"
+      #      prometheus.io/port: "9216"
+      #      prometheus.io/path: "/metrics"
+      #    type: ClusterIP
+      #    ports:
+      #      metrics: 9216
+      #  serviceMonitor:
+      #    enabled: true
+      #    namespace: "monitoring"
+      #    labels:
+      #      release: prometheus-stack
+      #

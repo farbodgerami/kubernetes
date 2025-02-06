@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    certmanager.k8s.io/acme-http01-edit-in-place: "false"
+    kubernetes.io/tls-acme: "true"
+    meta.helm.sh/release-name: argo
+    meta.helm.sh/release-namespace: argocd
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/instance: argo
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd
+    app.kubernetes.io/version: v2.12.6
+    helm.sh/chart: argo-cd-7.6.12
+  name: argo-argocd-server
+  namespace: argocd
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argo.kube.<DOMAIN>
+    http:
+      paths:
+      - backend:
+          service:
+            name: argo-argocd-server
+            port:
+              number: 443
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - argo.kube.<DOMAIN>
+    secretName: argocd-server-tls

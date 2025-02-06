@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngnixing
+  annotations:
+    kubernetes.io/ingress.class: "nginx"    
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: DOMAIN_NAME_1.ir
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: DOMAIN_NAME_1_front_svc
+                port:
+                  number: 3000
+            path: /
+    - host: api.DOMAIN_NAME_1.ir
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: PROJECT_NAME_1_nginx_svc
+                port:
+                  number: 80
+            path: /
+    - host: payment.DOMAIN_NAME_1.ir
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: pay_nginx_svc
+                port:
+                  number: 80
+            path: /
+    - host: support.DOMAIN_NAME_1.ir
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: DOMAIN_NAME_1_backoffice_svc
+                port:
+                  number: 3000
+            path: /
+
+
+# This section is only required if TLS is to be enabled for the Ingress
+  tls:
+    - hosts:
+      - DOMAIN_NAME_1.ir
+      secretName: kubetls

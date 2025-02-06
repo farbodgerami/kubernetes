@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay_nginx
+  labels:
+    tier: backend
+    app: pay_nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pay_nginx
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: pay_nginx
+        tier: backend
+    spec:
+      containers:
+      - name: nginx
+        image: repoAddress/payment/ngx:VERSION
+        volumeMounts:
+        - name: pay_data
+          mountPath: /var/www
+        - name: pay_nginx_config_default
+          readOnly: true
+          mountPath: /etc/nginx/conf.d
+
+        - name: pay_nginx_config_nginxfile
+          readOnly: true
+          mountPath: /etc/nginx/
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+      volumes:
+        - name: pay_data
+          persistentVolumeClaim:
+            claimName: pay_pvc
+        - name: pay_nginx_config_default
+          configMap:
+            name: default-conf  
+            items:
+              - key: default.conf
+                path: default.conf
+      
+        - name: pay_nginx_config_nginxfile
+          configMap:
+            name: nginx-conf  
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        # failureTreshhold: 5
+
+       

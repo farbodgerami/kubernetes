@@ -1,0 +1,42 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: DOMAIN_NAME_1_backoffice
+  labels:
+    app: DOMAIN_NAME_1_backoffice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: DOMAIN_NAME_1_backoffice
+  template:
+    metadata:
+      labels:
+        app: DOMAIN_NAME_1_backoffice
+    spec:
+      containers:
+      - name: DOMAIN_NAME_1_backoffice
+        image: repoAddress/PROJECT_NAME_1-front:VERSION
+        # readinessProbe:
+        # httpGet:
+        #   path: /testpath
+        #   port: 8080
+        # initialDelaySeconds: 15
+        # periodSeconds: 10
+        envFrom:
+        - configMapRef:
+            name: backoffice_configmap
+        volumeMounts:
+        - name: front_secret
+          mountPath: /etc/PROJECT_NAME_1_secret
+          readOnly: true
+        ports:
+        - containerPort: 3000
+   
+
+volumes:
+      
+      - name: front_secret_volume
+        secret:
+          secretName: front_secret

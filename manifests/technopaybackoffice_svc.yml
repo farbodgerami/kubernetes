@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: DOMAIN_NAME_1_backoffice_svc
+ labels:
+    app: DOMAIN_NAME_1_backoffice
+  
+spec:
+  type: nodePort
+  selector:
+    app: DOMAIN_NAME_1_backoffice
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30080

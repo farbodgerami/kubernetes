@@ -1,0 +1,106 @@
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: 7.0.11-debian-11-r0
+architecture: replication
+auth:
+  enabled: false
+  sentinel: false
+  password: "FGHY9FhPWzkNBKf3mHbLMt2AEBxRg8"
+commonConfiguration: |-
+  appendonly yes
+  save "160 100000"
+
+master:
+  count: 1
+  resources:
+    limits:
+      cpu: 750m
+      memory: 2048Mi
+    requests:
+      cpu: 250m
+      memory: 1024Mi
+  updateStrategy:
+    type: RollingUpdate
+  podAntiAffinityPreset: hard
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 100Gi
+
+replica:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 750m
+      memory: 2048Mi
+    requests:
+      cpu: 250m
+      memory: 1024Mi
+  updateStrategy:
+    type: RollingUpdate
+  podAntiAffinityPreset: hard
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 100Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPU: "90"
+    targetMemory: "80"
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+
+
+sentinel:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/redis-sentinel
+    tag: 7.0.10-debian-11-r8
+  quorum: 2
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+        #metrics:
+        #  enabled: true
+        #  image:
+        #    registry: docker.io
+        #    repository: bitnami/redis-exporter
+        #    tag: 1.50.0-debian-11-r2
+        #  resources:
+        #    limits:
+        #      cpu: 250m
+        #      memory: 256Mi
+        #    requests:
+        #      cpu: 250m
+        #      memory: 256Mi
+        #  service:
+        #    type: ClusterIP
+        #    port: 9121
+        #    annotations:
+        #      prometheus.io/scrape: "true"
+        #      prometheus.io/port: "9121"
+        #      prometheus.io/path: "/metrics"
+        #  serviceMonitor:
+        #    enabled: true
+        #    namespace: "monitoring"
+        #    additionalLabels:
+        #      release: prometheus-stack
+        #

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: PROJECT_NAME_1_svc
+  labels:
+    tier: backend
+spec:
+  selector:
+    app: PROJECT_NAME_1
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 9000

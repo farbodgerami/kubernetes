@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pay_nginx_config_default
+  labels:
+    tier: backend
+data:
+  nginx.conf : |
+        upstream php{
+        server pay-app:9000;
+         }
+        server {
+          listen       80;
+          server_name  _;
+
+          charset utf-8;
+          autoindex off;
+
+          client_max_body_size 8M;
+
+          #error_page  404              /404.html;
+          error_page   500 502 503 504  /50x.html;
+          location = /50x.html {
+              root   /usr/share/nginx/html;
+          }
+
+          location ~ /\.ht {
+              deny  all;
+          }
+
+          location /nginx_status {
+            stub_status on;
+            access_log   off;
+            allow 172.16.0.0/12;
+            deny all;
+          }
+
+
+          add_header X-Frame-Options "SAMEORIGIN";
+          add_header X-XSS-Protection "1; mode=block";
+          add_header X-Content-Type-Options "nosniff";
+
+
+          root /var/www/public;
+          index index.html index.htm index.php;
+
+          location / {
+              try_files $uri $uri/ /index.php?$query_string;
+          }
+
+          location ~ \.php$ {
+              fastcgi_pass php;
+              fastcgi_index index.php;
+              fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+              include fastcgi_params;
+          }
+
+          # Feed
+          location ~* \.(?:rss|atom)$ {
+            expires 1h;
+            add_header Cache-Control "public";
+          }
+
+          # Media: images, icons, video, audio
+          location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm)$ {
+            expires 1M;
+            access_log off;
+            add_header Cache-Control "public";
+          }
+        }
+
+        

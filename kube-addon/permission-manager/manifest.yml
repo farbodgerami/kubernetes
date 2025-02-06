@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: permission-manager
+  namespace: permission-manager
+type: Opaque
+stringData:
+  PORT: "4000"
+  CLUSTER_NAME: "technolife"
+  CONTROL_PLANE_ADDRESS: "https://vip.kube.<DOMAIN>:6443"
+  BASIC_AUTH_PASSWORD: "aWjKdqEMkpcfycAsdfweefwefG9XenEJ4mBxjmZ"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    certmanager.k8s.io/acme-http01-edit-in-place: "false"
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: permission-manager
+  namespace: permission-manager
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: permission.kube.<DOMAIN>
+    http:
+      paths:
+      - backend:
+          service:
+            name: permission-manager
+            port:
+              number: 4000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - permission.kube.<DOMAIN>
+    secretName: permission-general-tls

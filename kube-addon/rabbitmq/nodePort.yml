@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbit-service
+  namespace: rabbit
+  labels:
+    app: rabbit-pay-1
+spec:
+  type: NodePort
+  ports:
+   - name: rabbit-deployment
+     protocol: TCP
+     port: 15672
+     targetPort: 15672
+     nodePort: 32700
+  selector: 
+    app.kubernetes.io/instance: rabbit-pay
+    app.kubernetes.io/name: rabbitmq
+    statefulset.kubernetes.io/pod-name: rabbit-pay-rabbitmq-0

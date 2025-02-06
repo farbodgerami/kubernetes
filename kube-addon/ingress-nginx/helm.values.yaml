@@ -1,0 +1,30 @@
+---
+controller:
+  replicaCount: 1
+  minAvailable: 1
+  service:
+    externalTrafficPolicy: Local
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 90Mi
+
+  service:
+    nodePorts:
+      http: 32080
+      https: 32443
+    type: NodePort
+
+  metrics:
+    port: 10254
+    enabled: true
+    service:
+      type: NodePort
+      nodePort: "32254"

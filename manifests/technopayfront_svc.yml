@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: DOMAIN_NAME_1_front_svc
+ labels:
+    app: DOMAIN_NAME_1_front
+  
+spec:
+  type: nodePort
+  selector:
+    app: DOMAIN_NAME_1_front
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30080
